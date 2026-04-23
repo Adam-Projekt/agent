@@ -57,7 +57,7 @@ async function main() {
           tool_call_id: toolCall.id,
           content: content,
         });
-      } else if (functionNametoLowerCase() == "write") {
+      } else if (functionName.toLowerCase() == "write") {
         const path = args.file_path;
         fs.writeFileSync(path, args.content);
         message.push({
