@@ -28,8 +28,8 @@ async function main() {
   while (true) {
     const response = await client.chat.completions.create({
       model: "anthropic/claude-haiku-4.5",
-      messages: message,
-      tools: tools,
+      messages: message as any,
+      tools: tools as any,
     });
 
     if (!response.choices || response.choices.length === 0) {
