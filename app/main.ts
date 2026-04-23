@@ -34,7 +34,7 @@ async function main() {
   const message = response.choices[0].message;
   if (message.tool_calls && message.tool_calls.length > 0) {
     const toolCall = message.tool_calls[0];
-    const functionName = toolCall.funcion.name;
+    const functionName = toolCall.function.name;
     const args = JSON.parse(toolCall.function.arguments);
     if (functionName === "Read") {
       const content = fs.readFileSync(args.file_path, "utf-8");
