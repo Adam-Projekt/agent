@@ -64,7 +64,6 @@ async function main() {
           content: "Successfully wrote file",
         });
       } else if (functionName === "Bash") {
-        const result = execSync(args.command);
         let output;
         try {
           output =
