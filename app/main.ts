@@ -49,9 +49,10 @@ async function main() {
     });
 
     if (choice.tool_calls && choice.tool_calls.length > 0) {
-      const toolCall = choice.tool_calls[0];
+      const toolCall: OpenAI.Chat.Completions.ChatCompletionMessageToolCall =
+        choice.tool_calls[0];
       const functionName: string = toolCall.function.name;
-      const args = JSON.parse(toolCall.function.arguments);
+      const args: any = JSON.parse(toolCall.function.arguments);
 
       const result = executeToolCall(functionName, args, choice);
       if (result == undefined) {
@@ -66,13 +67,14 @@ async function main() {
       });
     } else {
       console.log(choice.content);
+      console.log(message);
       break;
     }
   }
 }
 function executeToolCall(
   functionName: string,
-  args,
+  args: any,
   choice: OpenAI.Chat.Completions.ChatCompletionMessage,
 ): string | undefined {
   switch (functionName.toLowerCase()) {
