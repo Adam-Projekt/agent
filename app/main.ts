@@ -58,10 +58,11 @@ async function main() {
         });
       } else if (functionName === "Write") {
         const path = args.file_path;
-        fs.writeFile(path, args.content);
+        fs.writeFileSync(path, args.content);
         message.push({
           role: "tool",
           tool_call_id: toolCall.id,
+          content: "Successfully wrote file",
         });
       } // use for diffrent tool_calls
     } else {
