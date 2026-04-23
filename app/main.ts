@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import read from "./tools/read.json";
-
+import fs from "fs"
 async function main() {
   const [, , flag, prompt] = process.argv;
   const apiKey = process.env.OPENROUTER_API_KEY;
