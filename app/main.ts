@@ -40,10 +40,8 @@ async function main() {
     //append response message to messages
     message.push({
       role: "assistant",
-      content: choice ?? null,
-      ...(choice.tool_calls
-        ? { tool_calls: choice.tool_calls }
-        : {}),
+      content: choice.content ?? null,
+      ...(choice.tool_calls ? { tool_calls: choice.tool_calls } : {}),
     });
 
     if (choice.tool_calls && choice.tool_calls.length > 0) {
