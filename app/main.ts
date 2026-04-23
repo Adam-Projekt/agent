@@ -1,9 +1,8 @@
 import OpenAI from "openai";
-import read from "./tools/read.json";
-import write from "./tools/write.json";
 import fs from "fs";
 
-let tools = [read, write]; //edit to add tools
+import { tools } from "./tools/tools";
+import { execSync } from "child_process";
 
 async function main() {
   const [, , flag, prompt] = process.argv;
@@ -64,7 +63,25 @@ async function main() {
           tool_call_id: toolCall.id,
           content: "Successfully wrote file",
         });
-      } // use for diffrent tool_calls
+      } else if (functionName === "Bash") {
+        const result = execSync(args.command);
+        let output;
+        try {
+          output =
+            execSync(args.command, { encoding: "utf-8" }) ||
+            "(command executed successfully with no output)";
+          return output;
+        } catch (execError: any) {
+          output = execError.stderr || execError.message;
+        }
+        message.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
+          content: output,
+        });
+      }
+
+      // use for diffrent tool_calls
     } else {
       console.log(choice.content);
       break;
