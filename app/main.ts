@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import fs from "fs";
 
 import { tools } from "./tools/tools";
-import { execSync } from "child_process";
+import { bash } from "./tools/bash";
 
 async function main() {
   const [, , flag, prompt] = process.argv;
@@ -21,11 +21,13 @@ async function main() {
     apiKey: apiKey,
     baseURL: baseURL,
   });
-  let message = [{ role: "user", content: prompt }];
+  let message: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    { role: "user", content: prompt },
+  ];
 
   console.error("Logs from your program will appear here!");
-
-  while (true) {
+  let active = true;
+  while (active) {
     const response = await client.chat.completions.create({
       model: "anthropic/claude-haiku-4.5",
       messages: message as any,
@@ -49,38 +51,18 @@ async function main() {
       const toolCall = choice.tool_calls[0];
       const functionName: string = toolCall.function.name;
       const args = JSON.parse(toolCall.function.arguments);
-      if (functionName.toLowerCase() == "read") {
-        const content = fs.readFileSync(args.file_path, "utf-8");
-        message.push({
-          role: "tool",
-          tool_call_id: toolCall.id,
-          content: content,
-        });
-      } else if (functionName.toLowerCase() == "write") {
-        const path = args.file_path;
-        fs.writeFileSync(path, args.content);
-        message.push({
-          role: "tool",
-          tool_call_id: toolCall.id,
-          content: "Successfully wrote file",
-        });
-      } else if (functionName.toLowerCase() == "bash") {
-        let output;
-        try {
-          output =
-            execSync(args.command, { encoding: "utf-8" }) ||
-            "(command executed successfully with no output)";
-        } catch (execError: any) {
-          output = execError.stderr || execError.message;
-        }
-        message.push({
-          role: "tool",
-          tool_call_id: toolCall.id,
-          content: output,
-        });
-      }
 
-      // use for diffrent tool_calls
+      const result = executeToolCall(functionName, args, choice);
+      if (result == undefined) {
+        console.log(choice.content);
+        active = false;
+        break;
+      }
+      message.push({
+        role: "tool",
+        tool_call_id: toolCall.id,
+        content: result, //actual execution
+      });
     } else {
       console.log(choice.content);
       break;
@@ -89,5 +71,21 @@ async function main() {
     console.log("TOOLS!!!!" + tools);
   }
 }
-
+function executeToolCall(
+  functionName: string,
+  args,
+  choice,
+): string | undefined {
+  switch (functionName.toLowerCase()) {
+    case "read":
+      return fs.readFileSync(args.file_path, "utf-8");
+      break;
+    case "bash":
+      return bash(args.command);
+    default:
+      console.log(choice.content);
+      return undefined;
+      break;
+  }
+}
 main();
