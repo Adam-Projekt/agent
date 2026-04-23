@@ -70,7 +70,6 @@ async function main() {
           output =
             execSync(args.command, { encoding: "utf-8" }) ||
             "(command executed successfully with no output)";
-          return output;
         } catch (execError: any) {
           output = execError.stderr || execError.message;
         }
