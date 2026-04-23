@@ -67,7 +67,6 @@ async function main() {
       });
     } else {
       console.log(choice.content);
-      console.log(message);
       break;
     }
   }
