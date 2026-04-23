@@ -1,8 +1,9 @@
 import OpenAI from "openai";
 import read from "./tools/read.json";
+import write from "./tools/write.json";
 import fs from "fs";
 
-let tools = [read];
+let tools = [read, write]; //edit to add tools
 
 async function main() {
   const [, , flag, prompt] = process.argv;
@@ -54,6 +55,13 @@ async function main() {
           role: "tool",
           tool_call_id: toolCall.id,
           content: content,
+        });
+      } else if (functionName === "Write") {
+        const path = args.file_path;
+        fs.writeFile(path, args.content);
+        message.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
         });
       } // use for diffrent tool_calls
     } else {
