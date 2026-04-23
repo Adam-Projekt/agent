@@ -32,6 +32,7 @@ async function main() {
   console.error("Logs from your program will appear here!");
 
   console.log(response.choices[0].message.content);
+  console.log(response);
 }
 
 main();
