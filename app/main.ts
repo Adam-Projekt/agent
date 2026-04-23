@@ -25,7 +25,7 @@ async function main() {
 
   console.error("Logs from your program will appear here!");
   console.log(message);
-  console.log(tools);
+  console.log("TOOLS!!!!" + tools);
   while (true) {
     const response = await client.chat.completions.create({
       model: "anthropic/claude-haiku-4.5",
@@ -48,16 +48,16 @@ async function main() {
 
     if (choice.tool_calls && choice.tool_calls.length > 0) {
       const toolCall = choice.tool_calls[0];
-      const functionName = toolCall.function.name;
+      const functionName: string = toolCall.function.name;
       const args = JSON.parse(toolCall.function.arguments);
-      if (functionName === "Read") {
+      if (functionName.toLowerCase() == "read") {
         const content = fs.readFileSync(args.file_path, "utf-8");
         message.push({
           role: "tool",
           tool_call_id: toolCall.id,
           content: content,
         });
-      } else if (functionName === "Write") {
+      } else if (functionNametoLowerCase() == "write") {
         const path = args.file_path;
         fs.writeFileSync(path, args.content);
         message.push({
@@ -65,7 +65,7 @@ async function main() {
           tool_call_id: toolCall.id,
           content: "Successfully wrote file",
         });
-      } else if (functionName === "Bash") {
+      } else if (functionName.toLowerCase() == "bash") {
         let output;
         try {
           output =
