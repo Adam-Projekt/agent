@@ -24,8 +24,7 @@ async function main() {
   let message = [{ role: "user", content: prompt }];
 
   console.error("Logs from your program will appear here!");
-  console.log(message);
-  console.log("TOOLS!!!!" + tools);
+
   while (true) {
     const response = await client.chat.completions.create({
       model: "anthropic/claude-haiku-4.5",
@@ -87,6 +86,8 @@ async function main() {
       console.log(choice.content);
       break;
     }
+    console.log(message);
+    console.log("TOOLS!!!!" + tools);
   }
 }
 
