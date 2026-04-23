@@ -68,8 +68,6 @@ async function main() {
       console.log(choice.content);
       break;
     }
-    console.log(message);
-    console.log("TOOLS!!!!" + tools);
   }
 }
 function executeToolCall(
