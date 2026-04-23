@@ -35,19 +35,19 @@ async function main() {
       throw new Error("no choices in response");
     }
 
-    const responseMessage = response.choices[0].message;
+    const choice = response.choices[0].message;
 
     //append response message to messages
-    messages.push({
+    message.push({
       role: "assistant",
-      content: responseMessage ?? null,
-      ...(responseMessage.tool_calls
-        ? { tool_calls: responseMessage.tool_calls }
+      content: choice ?? null,
+      ...(choice.tool_calls
+        ? { tool_calls: choice.tool_calls }
         : {}),
     });
 
-    if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
-      const toolCall = responseMessage.tool_calls[0];
+    if (choice.tool_calls && choice.tool_calls.length > 0) {
+      const toolCall = choice.tool_calls[0];
       const functionName = toolCall.function.name;
       const args = JSON.parse(toolCall.function.arguments);
       if (functionName === "Read") {
@@ -59,7 +59,7 @@ async function main() {
         });
       } // use for diffrent tool_calls
     } else {
-      console.log(responseMessage.content);
+      console.log(choice.content);
       break;
     }
   }
