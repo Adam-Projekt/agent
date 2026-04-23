@@ -3,6 +3,7 @@ import fs from "fs";
 
 import { tools } from "./tools/tools";
 import { bash } from "./tools/bash";
+import { write } from "./tools/write";
 
 async function main() {
   const [, , flag, prompt] = process.argv;
@@ -74,18 +75,18 @@ async function main() {
 function executeToolCall(
   functionName: string,
   args,
-  choice,
+  choice: OpenAI.Chat.Completions.ChatCompletionMessage,
 ): string | undefined {
   switch (functionName.toLowerCase()) {
     case "read":
       return fs.readFileSync(args.file_path, "utf-8");
-      break;
     case "bash":
       return bash(args.command);
+    case "write":
+      return write(args);
     default:
       console.log(choice.content);
       return undefined;
-      break;
   }
 }
 main();
